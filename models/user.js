@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 // const validator = require("validator");
-const studentSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     // required: true,
@@ -13,11 +13,11 @@ const studentSchema = new mongoose.Schema({
     // required: true,
     unique: [true, " Email id already present"],
 
-    validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error("Invalid Email");
-      }
-    },
+    // validate(value) {
+    //   if (!validator.isEmail(value)) {
+    //     throw new Error("Invalid Email");
+    //   }
+    // },
   },
 
   phone: {
@@ -33,5 +33,5 @@ const studentSchema = new mongoose.Schema({
     }
 });
 
-const Student = new mongoose.model('Student' , studentSchema);
-module.exports = Student
+const User = new mongoose.model('User' , userSchema);
+module.exports = User

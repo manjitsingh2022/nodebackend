@@ -1,6 +1,6 @@
 const express = require("express");
 require("./db/conn");
-const Student = require("./models/students");
+const User = require("./models/user");
 const app = express();
 const port = process.env.PORT || 8000;
 app.use(express.json());
@@ -8,11 +8,11 @@ app.get("/", (req, res) => {
   res.status.send("hello from the other sides");
 });
 
-// read the data of registered Students
-app.get("/students" , async(req, res) =>{
+// read the data of registered user
+app.get("/user" , async(req, res) =>{
   try{
-  const studentsData = await Student.find()
-  res.send(studentsData);
+  const userData = await User.find()
+  res.send(userData);
   }catch(e){
   res.send(e);
   }
@@ -21,9 +21,9 @@ app.get("/students" , async(req, res) =>{
 
 
 
-app.post("/students", (req, res) => {
+app.post("/user", (req, res) => {
   console.log(req.body);
-  const user = new Student(req.body);
+  const user = new User(req.body);
   user.save().then(()=>{
     res.send(user)
   }).catch((e)=>{
