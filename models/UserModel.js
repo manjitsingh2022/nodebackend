@@ -24,8 +24,9 @@ const userSchema = new mongoose.Schema({
 },
 phone: {
   type: Number,
- 
-  }
+  },
+  token: { type: String },
+
 },{timestamps:true});
 
 const User =  mongoose.model('User' , userSchema);

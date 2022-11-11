@@ -6,6 +6,7 @@ const UserController = require("../controllers/UserControllers")
 router.get('/', UserController.index)
 router.get('/show',UserController.show)
 router.post('/store',UserController.store)
+router.post('/register',UserController.register)
 router.patch('/update',UserController.update)
 router.delete('/delete',UserController.destroy)
 
