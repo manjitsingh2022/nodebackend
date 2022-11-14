@@ -1,6 +1,6 @@
 const User = require("../models/UserModel");
-const bcrypt = require('bcrypt');
-var { expressjwt: jwt } = require("express-jwt");
+const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
 // show the list of users
 const index = (req, res, next) => {
   User.find()
@@ -17,8 +17,8 @@ const index = (req, res, next) => {
 };
 
 const show = (req, res, next) => {
-  let userID = req.body.userID;
-  User.findById(userID)
+  let user_id = req.body.user_id;
+  User.findById(user_id)
     .then((response) => {
       res.json({
         response,
@@ -31,38 +31,16 @@ const show = (req, res, next) => {
     });
 };
 
-// add new user
-const store = (req, res, next) => {
-  console.log(req.body.password, "passs");
-  let user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    phone: req.body.phone,
-  });
-  user
-    .save()
-    .then((response) => {
-      res.json({
-        message: "User add successfully!",
-      });
-    })
-    .catch((error) => {
-      console.log("error", error);
-      res.json({
-        message: "An error Occured",
-      });
-    });
-};
+// add register user
 
 const register = async (req, res) => {
   // Our register logic starts here
   try {
     // Get user input
-    const { name, email, password, phone } = req.body;
+    const { name, email, password } = req.body;
 
     // Validate user input
-    if (!(email && password && name && phone)) {
+    if (!(email && password && name)) {
       res.status(400).send("All input is required");
     }
 
@@ -80,7 +58,6 @@ const register = async (req, res) => {
     // Create user in our database
     const user = await User.create({
       name,
-      phone,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
     });
@@ -104,16 +81,39 @@ const register = async (req, res) => {
   // Our register logic ends here
 };
 
+// add new user
+const store = (req, res, next) => {
+  console.log(req.body.password, "passs");
+  let user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+  });
+  user
+    .save()
+    .then((response) => {
+      res.json({
+        message: "User add successfully!",
+      });
+    })
+    .catch((error) => {
+      console.log("error", error);
+      res.json({
+        message: "An error Occured",
+      });
+    });
+};
+
 // update an user
 const update = (req, res, next) => {
-  let userID = req.body.userID;
-  console.log(req.body.userID, "update");
+  let user_id = req.body.userID;
+  console.log(req.body.user_id, "update");
   let UpdateData = {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
   };
-  User.findByIdAndUpdate(userID, { $set: UpdateData })
+  User.findByIdAndUpdate(user_id, { $set: UpdateData })
     .then(() => {
       res.json({
         message: "user updated successfully!",
@@ -128,8 +128,8 @@ const update = (req, res, next) => {
 
 // delete an user
 const destroy = (req, res, next) => {
-  let UserID = req.body.userID;
-  User.findByIdAndRemove(UserID)
+  let user_id = req.body.userID;
+  User.findByIdAndRemove(user_id)
     .then(() => {
       res.json({
         message: "User delete successfully!",
@@ -141,4 +141,41 @@ const destroy = (req, res, next) => {
       });
     });
 };
-module.exports = { index, show, destroy, store, update, register };
+
+const login = async (req, res) => {
+  // Our login logic starts here
+  try {
+    // Get user input
+    const { email, password } = req.body;
+
+    // Validate user input
+    if (!(email && password)) {
+      res.status(400).send("All input is required");
+    }
+    // Validate if user exist in our database
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // Create token
+      const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: "2h",
+        }
+      );
+
+      // save user token
+      user.token = token;
+
+      // user
+      res.status(200).json(user);
+    }
+    res.status(400).send("Invalid Credentials");
+  } catch (err) {
+    console.log(err);
+  }
+  // Our register logic ends here
+};
+
+module.exports = { index, show, destroy, store, update, register, login };
