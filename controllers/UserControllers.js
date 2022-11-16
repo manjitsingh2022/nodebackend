@@ -37,10 +37,10 @@ const register = async (req, res) => {
   // Our register logic starts here
   try {
     // Get user input
-    const { name, email, password } = req.body;
+    const { name, email, password,confirmpassword ,phone} = req.body;
 
     // Validate user input
-    if (!(email && password && name)) {
+    if (!(email && password && name && phone && confirmpassword)) {
       res.status(400).send("All input is required");
     }
 
@@ -60,6 +60,8 @@ const register = async (req, res) => {
       name,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
+      confirmpassword: encryptedPassword,
+      phone,
     });
 
     // Create token
