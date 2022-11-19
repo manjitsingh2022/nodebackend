@@ -37,10 +37,10 @@ const register = async (req, res) => {
   // Our register logic starts here
   try {
     // Get user input
-    const { name, email, password,confirmpassword ,phone} = req.body;
+    const { name, email, password ,phone} = req.body;
 
     // Validate user input
-    if (!(email && password && name && phone && confirmpassword)) {
+    if (!(email && password && name && phone )) {
       res.status(400).send("All input is required");
     }
 
@@ -95,6 +95,7 @@ const store = (req, res, next) => {
     .save()
     .then((response) => {
       res.json({
+        response,
         message: "User add successfully!",
       });
     })
@@ -116,8 +117,9 @@ const update = (req, res, next) => {
     password: req.body.password,
   };
   User.findByIdAndUpdate(user_id, { $set: UpdateData })
-    .then(() => {
+    .then((response) => {
       res.json({
+        response,
         message: "user updated successfully!",
       });
     })
@@ -134,6 +136,7 @@ const destroy = (req, res, next) => {
   User.findByIdAndRemove(user_id)
     .then(() => {
       res.json({
+        
         message: "User delete successfully!",
       });
     })

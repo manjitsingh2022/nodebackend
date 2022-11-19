@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 
 // start all routes
 const User = require("./routes/User");
-
+const Category = require("./routes/Category");
 // bodyparser for mongodb data
 console.log("Hi am here");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -18,6 +18,7 @@ app.use(cors());
 
 // API end points
 app.use("/", User);
+app.use("/category", Category);
 
 app.post("/home", auth, (req, res) => {
   if (!req.body.name) {
