@@ -1,4 +1,5 @@
 const Category = require("../models/CategoryModel");
+
 // show the list of users
 const index = (req, res, next) => {
   Category.find()
@@ -14,6 +15,7 @@ const index = (req, res, next) => {
     });
 };
 
+// 
 const show = (req, res, next) => {
   let user_id = req.body.user_id;
   Category.findById(user_id)
@@ -30,21 +32,19 @@ const show = (req, res, next) => {
 };
 
 
-
-
-
 // add new user
 const store = (req, res, next) => {
   console.log(req.body.category, "category");
   let category = new Category({
     category: req.body.category,
+    status: req.body.status,
   });
   category
     .save()
     .then((response) => {
       res.json({
         response,
-        message: "User add successfully!",
+        message: " User category add successfully!",
       });
     })
     .catch((error) => {
@@ -61,10 +61,10 @@ const update = (req, res, next) => {
   let user_id = req.body.userID;
   console.log(req.body.user_id, "update");
   let UpdateData = {
-    
-    password: req.body.category,
+    category: req.body.category,
+    status: req.body.status,
   };
-  category.findByIdAndUpdate(user_id, { $set: UpdateData })
+  Category.findByIdAndUpdate(user_id, { $set: UpdateData })
     .then((response) => {
       res.json({
         response,
@@ -84,7 +84,6 @@ const destroy = (req, res, next) => {
   Category.findByIdAndRemove(user_id)
     .then(() => {
       res.json({
-        
         message: "User delete successfully!",
       });
     })
@@ -95,6 +94,20 @@ const destroy = (req, res, next) => {
     });
 };
 
+// deleteAll an user
+const deleteAllData = async (req, res, next) => {
+try {
+    await Category.deleteMany().then((response) => {
+      res.json({
+        response,
+      });
+    })
+    console.log('All Data successfully deleted');
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 
-module.exports = { index, show, destroy, store, update };
+
+module.exports = { index, show, destroy, store, update,deleteAllData };
