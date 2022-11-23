@@ -34,10 +34,11 @@ const show = (req, res, next) => {
 
 // add new user
 const store = (req, res, next) => {
-  console.log(req.body.category, "category");
+  console.log(req.body.status, "category");
   let category = new Category({
     category: req.body.category,
     status: req.body.status,
+    // createdDate: req.body.createdDate,
   });
   category
     .save()
@@ -58,11 +59,12 @@ const store = (req, res, next) => {
 
 // update an user
 const update = (req, res, next) => {
-  let user_id = req.body.userID;
-  console.log(req.body.user_id, "update");
+  let user_id = req.body._id;
+  console.log(req.body._id, "update");
   let UpdateData = {
     category: req.body.category,
     status: req.body.status,
+    createdDate: req.body.createdDate,
   };
   Category.findByIdAndUpdate(user_id, { $set: UpdateData })
     .then((response) => {
@@ -80,7 +82,12 @@ const update = (req, res, next) => {
 
 // delete an user
 const destroy = (req, res, next) => {
-  let user_id = req.body.userID;
+  // by body delete
+  let user_id = req.body._id;
+
+  // use params by id record delete
+  // let user_id = req.params._id;
+
   Category.findByIdAndRemove(user_id)
     .then(() => {
       res.json({

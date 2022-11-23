@@ -5,7 +5,7 @@ router.get('/categories', categoryController.index)
 router.get('/show',categoryController.show)
 router.post('/store',categoryController.store)
 router.patch('/update',categoryController.update)
-router.delete('/delete',categoryController.destroy)
+router.post('/delete',categoryController.destroy)
 router.delete('/deleteRecord',categoryController.deleteAllData)
 
 module.exports = router
