@@ -1,4 +1,4 @@
-const Category = require("../models/CategoryModel");
+const Category = require("../models/category.model");
 
 // show the list of users
 const index = (req, res, next) => {
