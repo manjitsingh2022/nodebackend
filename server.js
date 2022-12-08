@@ -17,6 +17,7 @@ const  router  = require("./app/routes");
 require('./app/routes/auth.routes',router.authRote)(app);
 require('./app/routes/user.routes',router.userRote)(app);
 require('./app/routes/category.routes',router.categoryRote)(app);
+require('./app/routes/advertisement.routes',router.advertisementRote)(app);
 
 // simple route
 app.get("/", (req, res) => {

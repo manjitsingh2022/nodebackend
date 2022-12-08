@@ -1,5 +1,6 @@
-const Category = require("../models/category.model");
-
+// const category = require("../models/category.model");
+const db = require("../models");
+const Category = db.category;
 // show the list of users
 const index = (req, res, next) => {
   Category.find()
@@ -15,7 +16,7 @@ const index = (req, res, next) => {
     });
 };
 
-// 
+// show
 const show = (req, res, next) => {
   let user_id = req.body.user_id;
   Category.findById(user_id)
