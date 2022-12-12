@@ -10,9 +10,9 @@ module.exports = function(app) {
     });
 
 app.get('/advertisements', advertisementController.index)
-// app.get('/show',advertisementController.show)
+// app.get('/advertisement/show',advertisementController.show)
 app.post('/advertisement',advertisementController.store)
 // app.patch('/advertisement/update',advertisementController.update)
-// app.post('/advertisement/delete',advertisementController.destroy)
-// app.delete('/advertisement/deleteRecord',advertisementController.deleteAllData)
+app.post('/advertisement/delete',advertisementController.destroy)
+app.delete('/advertisement/deleteRecord',advertisementController.deleteAllData)
 }

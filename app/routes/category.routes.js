@@ -11,7 +11,7 @@ module.exports = function(app) {
 
 app.get('/categories', categoryController.index)
 app.get('/show',categoryController.show)
-app.post('/store',categoryController.store)
+app.post('/category',categoryController.store)
 app.patch('/update',categoryController.update)
 app.post('/delete',categoryController.destroy)
 app.delete('/deleteRecord',categoryController.deleteAllData)
