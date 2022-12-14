@@ -2,22 +2,22 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8081",
 };
 
 app.use(cors(corsOptions));
-
 // parse requests of content-type - application/json
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-const  router  = require("./app/routes");
+const router = require("./app/routes");
 // require('./app/routes/category')(app);
-require('./app/routes/auth.routes',router.authRote)(app);
-require('./app/routes/user.routes',router.userRote)(app);
-require('./app/routes/category.routes',router.categoryRote)(app);
+require("./app/routes/auth.routes", router.authRote)(app);
+require("./app/routes/user.routes", router.userRote)(app);
+require("./app/routes/category.routes", router.categoryRote)(app);
 require('./app/routes/advertisement.routes',router.advertisementRote)(app);
+
 
 // simple route
 app.get("/", (req, res) => {
@@ -30,32 +30,47 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-
 const db = require("./app/models");
 const Role = db.role;
+
+// const dbConfig = require("./app/config/db.config.js");
+// db.mongoose
+// .connect(
+//   "mongodb+srv://manjit:1234@nodeapi.cierv21.mongodb.net/?retryWrites=true&w=majority", {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//   }
+// )
+// .then(() => {
+//   console.log("Successfully connect to MongoDB.");
+//  initial();
+// })
+// .catch(err => {
+//    console.error("Connection error", err);
+// process.exit();
+// });
 
 const dbConfig = require("./app/config/db.config.js");
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
   })
-  .catch(err => {
+  .catch((err) => {
     console.error("Connection error", err);
     process.exit();
   });
 
-
-const initial=() =>{
+const initial = () => {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       new Role({
-        name: "user"
-      }).save(err => {
+        name: "user",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -73,8 +88,8 @@ const initial=() =>{
       // });
 
       new Role({
-        name: "admin"
-      }).save(err => {
+        name: "admin",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -83,4 +98,4 @@ const initial=() =>{
       });
     }
   });
-}
+};

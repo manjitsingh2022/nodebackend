@@ -5,6 +5,7 @@ const Role = db.role;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { StatusCodes } = require("http-status-codes");
 
 exports.signup = (req, res) => {
   console.log(req.body, "body");
@@ -20,7 +21,7 @@ exports.signup = (req, res) => {
 
   user.save((err, user) => {
     if (err) {
-      res.status(500).send({ message: err });
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
       return;
     }
 
@@ -31,14 +32,14 @@ exports.signup = (req, res) => {
         },
         (err, roles) => {
           if (err) {
-            res.status(500).send({ message: err });
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
             return;
           }
 
           user.roles = roles.map((role) => role._id);
           user.save((err) => {
             if (err) {
-              res.status(500).send({ message: err });
+              res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
               return;
             }
 
@@ -49,14 +50,14 @@ exports.signup = (req, res) => {
     } else {
       Role.findOne({ name: "user" }, (err, role) => {
         if (err) {
-          res.status(500).send({ message: err });
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
           return;
         }
 
         user.roles = [role._id];
         user.save((err) => {
           if (err) {
-            res.status(500).send({ message: err });
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
             return;
           }
 
@@ -77,12 +78,12 @@ exports.signin = (req, res) => {
     .populate("roles", "-__v")
     .exec((err, user) => {
       if (err) {
-        res.status(500).send({ message: err });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
         return;
       }
 
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(StatusCodes.NOT_FOUND).send({ message: "User Not found." });
       }
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
@@ -90,7 +91,7 @@ exports.signin = (req, res) => {
       );
       console.log("password is vaild", req.body.password);
       if (!passwordIsValid) {
-        return res.status(401).send({
+        return res.status(StatusCodes.UNAUTHORIZED).send({
           accessToken: null,
           message: "Invalid Password!",
         });
@@ -154,7 +155,7 @@ exports.deleteAll = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
   let user = await User.findById(req.params.id);
   if (!user) {
-    return res.status(500).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "user not found",
     });
@@ -165,7 +166,7 @@ exports.updateUser = async (req, res, next) => {
     runValidators: true,
     useFindAndModify: false,
   });
-  res.status(200).json({ success: true, user });
+  res.status(StatusCodes.OK).json({ success: true, user });
 };
 
 

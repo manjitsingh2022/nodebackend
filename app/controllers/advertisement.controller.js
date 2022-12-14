@@ -1,7 +1,6 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const db = require("../models");
 const Advertisement = db.advertisement;
-
 // show the list of users advertisement
 const index = (req, res, next) => {
   Advertisement.find()
@@ -37,6 +36,7 @@ const store = (req, res, next) => {
   let advertisement = new Advertisement({
     name: req.body.name,
     description: req.body.description,
+    files: req.files.images,
     // createdDate: req.body.createdDate,
   });
   advertisement
@@ -88,39 +88,17 @@ const deleteAllData = async (req, res, next) => {
     }
   };
 
+  const createAdvertisement = async (req, res) => {
+    const advertisement = await Advertisement.create(req.body);
+    res.status(StatusCodes.CREATED).json({ advertisement });
+  };
+  const getAllAdvertisement = async (req, res) => {
+    const advertisement = await Advertisement.find({});
+    res.status(StatusCodes.OK).json({ advertisement });
+  };
+
+  
 
 
-
-  const createProduct = catchAsyncErrors(async (req, res, next) => {
-    let images = [];
   
-    if (typeof req.body.images === "string") {
-      images.push(req.body.images);
-    } else {
-      images = req.body.images;
-    }
-  
-    const imagesLinks = [];
-  
-    for (let i = 0; i < images.length; i++) {
-      const result = await cloudinary.v2.uploader.upload(images[i], {
-        folder: "products",
-      });
-  
-      imagesLinks.push({
-        public_id: result.public_id,
-        url: result.secure_url,
-      });
-    }
-  
-    req.body.images = imagesLinks;
-    req.body.user = req.user.id;
-  
-    const product = await Product.create(req.body);
-  
-    res.status(201).json({
-      success: true,
-      product,
-    });
-  });
-module.exports = { store, index ,deleteAllData,destroy,createProduct};
+module.exports = { store, index ,deleteAllData,destroy,createAdvertisement,getAllAdvertisement};
