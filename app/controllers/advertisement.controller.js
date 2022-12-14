@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const db = require("../models");
 const Advertisement = db.advertisement;

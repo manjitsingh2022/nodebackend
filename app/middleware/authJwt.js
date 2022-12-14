@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const db = require("../models");
@@ -8,12 +9,12 @@ verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
 
   if (!token) {
-    return res.status(403).send({ message: "No token provided!" });
+    return res.status(StatusCodes.FORBIDDEN).send({ message: "No token provided!" });
   }
 
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
-      return res.status(401).send({ message: "Unauthorized!" });
+      return res.status(StatusCodes.UNAUTHORIZED).send({ message: "Unauthorized!" });
     }
     req.userId = decoded.id;
     next();
@@ -23,7 +24,7 @@ verifyToken = (req, res, next) => {
 isAdmin = (req, res, next) => {
   User.findById(req.userId).exec((err, user) => {
     if (err) {
-      res.status(500).send({ message: err });
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
       return;
     }
 
@@ -33,7 +34,7 @@ isAdmin = (req, res, next) => {
       },
       (err, roles) => {
         if (err) {
-          res.status(500).send({ message: err });
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: err });
           return;
         }
 
@@ -44,7 +45,7 @@ isAdmin = (req, res, next) => {
           }
         }
 
-        res.status(403).send({ message: "Require Admin Role!" });
+        res.status(StatusCodes.FORBIDDEN).send({ message: "Require Admin Role!" });
         return;
       }
     );
