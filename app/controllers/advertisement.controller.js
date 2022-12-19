@@ -1,5 +1,5 @@
-const { StatusCodes } = require("http-status-codes");
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+// const { StatusCodes } = require("http-status-codes");
+// const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const db = require("../models");
 const Advertisement = db.advertisement;
 // show the list of users advertisement
@@ -33,11 +33,11 @@ const index = (req, res, next) => {
 // };
 // add new user advertisement
 const store = (req, res, next) => {
-  console.log(req.body.name, "name");
+  console.log(req.body, "name");
   let advertisement = new Advertisement({
     name: req.body.name,
     description: req.body.description,
-    files: req.files.images,
+    image: req.body.image,
     // createdDate: req.body.createdDate,
   });
   advertisement
@@ -78,28 +78,15 @@ const destroy = (req, res, next) => {
 // deleteAll an user Advertisement
 const deleteAllData = async (req, res, next) => {
   try {
-      await Advertisement.deleteMany().then((response) => {
-        res.json({
-          response,
-        });
-      })
-      console.log('All Data successfully deleted');
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    await Advertisement.deleteMany().then((response) => {
+      res.json({
+        response,
+      });
+    });
+    console.log("All Data successfully deleted");
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-  const createAdvertisement = async (req, res) => {
-    const advertisement = await Advertisement.create(req.body);
-    res.status(StatusCodes.CREATED).json({ advertisement });
-  };
-  const getAllAdvertisement = async (req, res) => {
-    const advertisement = await Advertisement.find({});
-    res.status(StatusCodes.OK).json({ advertisement });
-  };
-
-  
-
-
-  
-module.exports = { store, index ,deleteAllData,destroy,createAdvertisement,getAllAdvertisement};
+module.exports = { store, index, deleteAllData, destroy };

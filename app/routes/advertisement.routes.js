@@ -1,7 +1,6 @@
 const advertisementController = require("../controllers/advertisement.controller");
 const uploadController = require("../controllers/upload.controller");
 
-
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -14,15 +13,15 @@ module.exports = function (app) {
     if (!req.file) {
       console.log("No file received");
       return res.send({
-        success: false
+        success: false,
       });
-  
     } else {
-      console.log('file received');
+      console.log("file received");
       return res.send({
-        success: true
-      })
-  }});
+        success: true,
+      });
+    }
+  });
   app.get("/advertisements", advertisementController.index);
   // app.get('/advertisement/show',advertisementController.show)
   app.post("/advertisement", advertisementController.store);
