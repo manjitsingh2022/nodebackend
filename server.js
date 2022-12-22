@@ -2,10 +2,22 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const path = require("path");
-var corsOptions = {
-  origin: "http://localhost:8081",
+
+const corsOpts = {
+  origin: '*',
+
+  methods: [
+    'GET',
+    'POST',
+  ],
+
+  allowedHeaders: [
+    'Content-Type',
+  ],
 };
-app.use(cors(corsOptions));
+
+app.use(cors(corsOpts));
+
 // parse requests of content-type - application/json
 app.use(express.json());
 
@@ -18,6 +30,8 @@ require("./app/routes/user.routes", router.userRote)(app);
 require("./app/routes/category.routes", router.categoryRote)(app);
 require('./app/routes/advertisement.routes',router.advertisementRote)(app);
 // require("/uploads", express.static(path.join(__dirname, "uploads")))(app);
+app.options('*', cors(corsOpts))
+
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to my application." });
@@ -36,7 +50,9 @@ app.listen(PORT, () => {
 const db = require("./app/models");
 const Role = db.role;
 
+
 // Setup on browser in MongoDB linked
+
 // const dbConfig = require("./app/config/db.config.js");
 // db.mongoose
 // .connect(
@@ -53,6 +69,8 @@ const Role = db.role;
 //    console.error("Connection error", err);
 // process.exit();
 // });
+
+
 
 // Setup MongoDB Locally
 
