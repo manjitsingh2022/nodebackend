@@ -4,16 +4,11 @@ const app = express();
 const path = require("path");
 
 const corsOpts = {
-  origin: '*',
+  origin: "*",
 
-  methods: [
-    'GET',
-    'POST',
-  ],
+  methods: ["GET", "POST"],
 
-  allowedHeaders: [
-    'Content-Type',
-  ],
+  allowedHeaders: ["Content-Type"],
 };
 
 app.use(cors(corsOpts));
@@ -28,18 +23,17 @@ const router = require("./app/routes");
 require("./app/routes/auth.routes", router.authRote)(app);
 require("./app/routes/user.routes", router.userRote)(app);
 require("./app/routes/category.routes", router.categoryRote)(app);
-require('./app/routes/advertisement.routes',router.advertisementRote)(app);
+require("./app/routes/advertisement.routes", router.advertisementRote)(app);
 // require("/uploads", express.static(path.join(__dirname, "uploads")))(app);
-app.options('*', cors(corsOpts))
+app.options("*", cors(corsOpts));
 
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to my application." });
 });
 
-
 // Upload File Receive Local
-app.use(express.static(path.resolve('./uploads')));
+app.use(express.static(path.resolve("./uploads")));
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -49,7 +43,6 @@ app.listen(PORT, () => {
 
 const db = require("./app/models");
 const Role = db.role;
-
 
 // Setup on browser in MongoDB linked
 
@@ -69,8 +62,6 @@ const Role = db.role;
 //    console.error("Connection error", err);
 // process.exit();
 // });
-
-
 
 // Setup MongoDB Locally
 
