@@ -25,6 +25,7 @@ require("./app/routes/user.routes", router.userRote)(app);
 require("./app/routes/category.routes", router.categoryRote)(app);
 require("./app/routes/advertisement.routes", router.advertisementRote)(app);
 // require("/uploads", express.static(path.join(__dirname, "uploads")))(app);
+
 app.options("*", cors(corsOpts));
 
 // simple route
@@ -35,6 +36,11 @@ app.get("/", (req, res) => {
 // Upload File Receive Local
 app.use(express.static(path.resolve("./uploads")));
 
+
+app.use(express.static(__dirname + "/dist/nodebacked"));
+app.post("/*", function (req, res) {
+  res.sendFile(__dirname + "/dist/nodebacked/index.html");
+});
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

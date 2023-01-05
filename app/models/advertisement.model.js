@@ -5,6 +5,7 @@ const Advertisement = mongoose.model(
   new mongoose.Schema({
     name: { type: String, trim: true },
     description: { type: String },
+    category: { type: String },
     image: {
       type: String,
       required: true,

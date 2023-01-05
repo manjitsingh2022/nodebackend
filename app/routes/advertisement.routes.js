@@ -23,10 +23,10 @@ module.exports = function (app) {
     }
   });
   app.get("/advertisements", advertisementController.index);
-  // app.get('/advertisement/show',advertisementController.show)
+  app.get('/advertisement/:id',advertisementController.getProductDetails)
   app.post("/advertisement", advertisementController.store);
   // app.patch('/advertisement/update',advertisementController.update)
-  app.post("/advertisement/delete", advertisementController.destroy);
+  app.delete("/advertisement/:id", advertisementController.destroy);
   app.delete(
     "/advertisement/deleteRecord",
     advertisementController.deleteAllData

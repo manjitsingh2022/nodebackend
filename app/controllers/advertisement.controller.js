@@ -16,7 +16,19 @@ const index = (req, res, next) => {
       });
     });
 };
+// Get Product Details
+const getProductDetails = async (req, res, next) => {
+  const product = await Advertisement.findById(req.params.id);
 
+  if (!product) {
+    return next("Product not found", 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    product,
+  });
+};
 // const index = async (req, res, next) => {
 //   try {
 //     const advertisement = await Advertisement.find();
@@ -33,11 +45,12 @@ const index = (req, res, next) => {
 // };
 // add new user advertisement
 const store = (req, res, next) => {
-  console.log(req.body, "name");
+  console.log(req.body.category, "category");
   let advertisement = new Advertisement({
     name: req.body.name,
     description: req.body.description,
     image: req.body.image,
+    category: req.body.category,
     // createdDate: req.body.createdDate,
   });
   advertisement
@@ -59,9 +72,9 @@ const store = (req, res, next) => {
 // delete an user Advertisement
 const destroy = (req, res, next) => {
   // by body delete
-  let user_id = req.body._id;
+  // let user_id = req.body._id;
   // use params by id record delete
-  // let user_id = req.params._id;
+  let user_id = req.params.id;
 
   Advertisement.findByIdAndRemove(user_id)
     .then(() => {
@@ -75,6 +88,7 @@ const destroy = (req, res, next) => {
       });
     });
 };
+
 // deleteAll an user Advertisement
 const deleteAllData = async (req, res, next) => {
   try {
@@ -89,4 +103,4 @@ const deleteAllData = async (req, res, next) => {
   }
 };
 
-module.exports = { store, index, deleteAllData, destroy };
+module.exports = { store, index, getProductDetails, deleteAllData, destroy };
