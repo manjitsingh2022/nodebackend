@@ -103,4 +103,28 @@ const deleteAllData = async (req, res, next) => {
   }
 };
 
-module.exports = { store, index, getProductDetails, deleteAllData, destroy };
+// update an user
+const update = (req, res, next) => {
+  let user_id = req.body._id;
+  console.log(req.body._id, "update");
+  let UpdateData = {
+    name: req.body.name,
+    description: req.body.description,
+    status: req.body.status,
+    image: req.body.image,
+    createdDate: req.body.createdDate,
+  };
+  Advertisement.findByIdAndUpdate(user_id, { $set: UpdateData })
+    .then((response) => {
+      res.json({
+        response,
+        message: "Advertisement updated successfully!",
+      });
+    })
+    .catch((error) => {
+      res.json({
+        message: "error",
+      });
+    });
+};
+module.exports = { store, index, getProductDetails, deleteAllData, destroy,update };
