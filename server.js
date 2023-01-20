@@ -22,8 +22,10 @@ const router = require("./app/routes");
 // require('./app/routes/category')(app);
 require("./app/routes/auth.routes", router.authRote)(app);
 require("./app/routes/user.routes", router.userRote)(app);
+require("./app/routes/navbar.routes", router.navbarRote)(app);
 require("./app/routes/category.routes", router.categoryRote)(app);
 require("./app/routes/advertisement.routes", router.advertisementRote)(app);
+require("./app/routes/store.routes", router.storeRote)(app);
 // require("/uploads", express.static(path.join(__dirname, "uploads")))(app);
 
 app.options("*", cors(corsOpts));
@@ -36,11 +38,13 @@ app.get("/", (req, res) => {
 // Upload File Receive Local
 app.use(express.static(path.resolve("./uploads")));
 
-
-app.use(express.static(__dirname + "/dist/nodebacked"));
+// app.use(express.static(__dirname + "/dist/nodebacked"));
+app.use(express.static(__dirname));
+console.log(__dirname);
 app.post("/*", function (req, res) {
-  res.sendFile(__dirname + "/dist/nodebacked/index.html");
+  res.sendFile(__dirname + "/server.js");
 });
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

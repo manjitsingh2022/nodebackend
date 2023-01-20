@@ -3,18 +3,37 @@
 const db = require("../models");
 const Advertisement = db.advertisement;
 // show the list of users advertisement
-const index = (req, res, next) => {
-  Advertisement.find()
-    .then((response) => {
-      res.json({
-        response,
-      });
-    })
-    .catch((error) => {
-      res.json({
-        message: "an error",
-      });
-    });
+const index = async (req, res, next) => {
+  const { category, name, featured, sort, select } = req.query;
+  const queryObject = {};
+  if (category) {
+    queryObject.category = category;
+  }
+  if (featured) {
+    queryObject.featured = featured;
+  }
+  if (name) {
+    queryObject.name = { $regex: name, $options: "i" };
+  }
+  
+  let apiData = Advertisement.find(queryObject);
+  if (sort) {
+    let sortFix = sort.split(",").join(" "); 
+    apiData = apiData.sort(sortFix);
+  }
+  if (select) {
+    // let selectFix = select.replace(",", " ");
+    let selectFix = select.split(",").join(" ");
+    apiData = apiData.select(selectFix);
+  }
+  let page = Number(req.query.page) || 1;
+  let limit = Number(req.query.limit) || 10;
+  let  skip =(page-1) * limit;
+  apiData = apiData.skip(skip).limit(limit);
+  console.log(queryObject);
+  // Advertisement.apiData
+  const response = await apiData;
+  res.status(200).json({ response,nbHits:response.length });
 };
 // Get Product Details
 const getProductDetails = async (req, res, next) => {
@@ -45,13 +64,15 @@ const getProductDetails = async (req, res, next) => {
 // };
 // add new user advertisement
 const store = (req, res, next) => {
-  console.log(req.body.category, "category");
+  console.log(req.body.location, "location");
   let advertisement = new Advertisement({
     name: req.body.name,
     description: req.body.description,
     image: req.body.image,
     category: req.body.category,
-    // createdDate: req.body.createdDate,
+    rating: req.body.rating,
+    featured: req.body.featured,
+    location: req.body.location,
   });
   advertisement
     .save()
@@ -103,16 +124,18 @@ const deleteAllData = async (req, res, next) => {
   }
 };
 
-// update an user
+// update an user Advertisement
 const update = (req, res, next) => {
   let user_id = req.body._id;
-  console.log(req.body._id, "update");
+  console.log(req.body, "update");
   let UpdateData = {
     name: req.body.name,
     description: req.body.description,
     status: req.body.status,
     image: req.body.image,
+    rating: req.body.rating,
     createdDate: req.body.createdDate,
+    // location: req.body.location,
   };
   Advertisement.findByIdAndUpdate(user_id, { $set: UpdateData })
     .then((response) => {
@@ -127,4 +150,32 @@ const update = (req, res, next) => {
       });
     });
 };
-module.exports = { store, index, getProductDetails, deleteAllData, destroy,update };
+
+const searchAdvertisement = async (req, res, next) => {
+  try {
+    // const user_id = req.params.id;
+    const userData = await Advertisement.findOne({ _id: req.body.user_id });
+    console.log("userData", userData);
+    //  if (userData) {
+    //   if (!req.body.latitude || !req.body.logitude) {
+    //     res.status(200).send({success:false,message:"lat and long is not found"})
+    //   } else {
+    //     const advertisementData=await
+    //   }
+    //  } else {
+
+    //  }
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+    console.log("could not find user location", err);
+  }
+};
+module.exports = {
+  store,
+  index,
+  getProductDetails,
+  deleteAllData,
+  destroy,
+  update,
+  searchAdvertisement,
+};
