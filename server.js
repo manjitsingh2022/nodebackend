@@ -26,6 +26,7 @@ require("./app/routes/navbar.routes", router.navbarRote)(app);
 require("./app/routes/category.routes", router.categoryRote)(app);
 require("./app/routes/advertisement.routes", router.advertisementRote)(app);
 require("./app/routes/store.routes", router.storeRote)(app);
+require("./app/routes/location.routes", router.locationRote)(app);
 // require("/uploads", express.static(path.join(__dirname, "uploads")))(app);
 
 app.options("*", cors(corsOpts));
@@ -73,8 +74,23 @@ const Role = db.role;
 // process.exit();
 // });
 
+
+// *************************** only use in import file in json  than use it *********************
 // Setup MongoDB Locally
 
+// require("dotenv").config();
+// const location = require("./app/models/location.model");
+// const LocationJson = require("./location.json");
+// const start = async () => {
+//   try {
+//     await location.create(LocationJson);
+//     console.log("success",);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+// start();
+// *************************** only use in import file in json  than use it *********************
 const dbConfig = require("./app/config/db.config.js");
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -90,7 +106,7 @@ db.mongoose
     process.exit();
   });
 
-const initial = () => {
+ const initial = () => {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       new Role({
