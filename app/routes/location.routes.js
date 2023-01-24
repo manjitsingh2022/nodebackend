@@ -9,8 +9,8 @@ module.exports = function(app) {
       next();
     });
 
-app.get('/getlocation', LocationController.getStores)
-app.get('/location/:_id', LocationController.getStoresId)
+app.get('/getlocation', LocationController.getLocation)
+app.get('/location/:_id', LocationController.getLocationId)
 app.post('/location', LocationController.store)
 app.put('/location/:_id', LocationController.UpdateById)
 app.delete('/location/delete/:_id', LocationController.deleteById)

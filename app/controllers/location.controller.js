@@ -2,9 +2,9 @@ const { default: mongoose } = require("mongoose");
 const db = require("../models");
 const Location = db.location;
 
-exports.getStores = async (req, res, next) => {
-  console.log("req");
-  const { city, country,  sort, select,/*  iso2, iso3,featured  */} = req.query;
+exports.getLocation = async (req, res, next) => {
+  console.log("req", req.query);
+  const { city, country, sort, select /*  iso2, iso3,featured  */} = req.query;
   const queryObject = {};
   if (city) {
     queryObject.city = { $regex: city, $options: "i" };
@@ -25,19 +25,31 @@ exports.getStores = async (req, res, next) => {
     let selectFix = select.split(",").join(" ");
     apiData = apiData.select(selectFix);
   }
-//   let page = Number(req.query.page) || 1;
-//   let limit = Number(req.query.limit) || 10;
-//   let skip = (page - 1) * limit;
-//   apiData = apiData.skip(skip).limit(limit);
+    let page = Number(req.query.page) || 1;
+    let limit = Number(req.query.limit) || 10;
+    let skip = (page - 1) * limit;
+    apiData = apiData.skip(skip).limit(limit);
   console.log(queryObject);
   // Location.apiData
   // const response = await apiData;
   // res.status(200).json({ response, nbHits: response.length });
   try {
-    const location = await apiData;
-    return res
-      .status(200)
-      .json({ success: true, count: location.length, data: location , nbHits: location.length });
+    // var query = queryObject.city.sort((a, b) => a.city - b.city);
+
+    const location = await apiData
+      // .find()
+      // .select()
+      // .sort()
+      // .collation({ locale: "en_US", numericOrdering: true ,})
+      .limit(10)
+      // .distinct("city")
+    console.log(location, "location");
+    return res.status(200).json({
+      success: true,
+      count: location.length,
+      data: location,
+      nbHits: location.length,
+    });
   } catch (err) {
     res.status(500).json({
       error: err,
@@ -45,7 +57,7 @@ exports.getStores = async (req, res, next) => {
   }
 };
 
-exports.getStoresId = async (req, res, next) => {
+exports.getLocationId = async (req, res, next) => {
   console.log({ _id: req.params._id });
   try {
     const location = await Location.findById({ _id: req.params._id });
@@ -75,45 +87,48 @@ exports.store = (req, res, next) => {
   if (req.body.parentId) {
     locationObj.parentId = req.body.parentId;
   }
-  
-    try {
-      const location = new Location(locationObj);
-      return res
-        .status(200)
-        .json({ success: true, count: location.length, data: location });
-    } catch (error) {
-      res.status(500).json({
-        error: err,
-      });
-    }
+
+  try {
+    const location = new Location(locationObj);
+    return res
+      .status(200)
+      .json({ success: true, count: location.length, data: location });
+  } catch (error) {
+    res.status(500).json({
+      error: err,
+    });
+  }
 };
 
 exports.UpdateById = async (req, res, next) => {
   console.log(req.params._id);
 
-    try {
-      const location = Location.findOneAndUpdate(
-        { _id: req.params._id },
-        {
-          $set: {
-            city: req.body.city,
-            city_ascii: req.body.city_ascii,
-            lat: req.body.lat,
-            lng: req.body.lng,
-            iso2: req.body.iso2,
-            iso3: req.body.iso3,
-            // parentId: req.body.parentId,
-          },
-        }
-      );
-      return res
-        .status(200)
-        .json({ success: true, count: location.length, data: location });
-    } catch (error) {
-      res.status(500).json({
-        error: err,
-      });
-    }
+  try {
+    const location = Location.findOneAndUpdate(
+      { _id: req.params._id },
+      {
+        $set: {
+          city: req.body.city,
+          city_ascii: req.body.city_ascii,
+          lat: req.body.lat,
+          lng: req.body.lng,
+          iso2: req.body.iso2,
+          iso3: req.body.iso3,
+          // parentId: req.body.parentId,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    return res
+      .status(200)
+      .json({ success: true, count: location.length, data: location });
+  } catch (error) {
+    res.status(500).json({
+      error: err,
+    });
+  }
 };
 
 exports.deleteById = async (req, res, next) => {

@@ -1,8 +1,9 @@
 const express = require("express");
+const mongoose = require('mongoose');
 const cors = require("cors");
 const app = express();
 const path = require("path");
-
+mongoose.set('strictQuery', true);
 const corsOpts = {
   origin: "*",
 

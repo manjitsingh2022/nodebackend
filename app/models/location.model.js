@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
  const LocationSchema= new mongoose.Schema({
     city: { type: String, required: true },
-    city_ascii: { type: String},
-    lat: { type: Number},
-    lng: { type: Number},
-    country: { type: String},
-    iso2: { type: String},
-    iso3: { type: String},
+    city_ascii: { type: String , required: true},
+    lat: { type: Number , required: true},
+    lng: { type: Number, required: true},
+    country: { type: String , required: true},
+    iso2: { type: String , required: true},
+    iso3: { type: String , required: true},
 })
 module.exports = mongoose.model('Location', LocationSchema);

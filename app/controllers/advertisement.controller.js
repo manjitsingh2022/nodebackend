@@ -4,6 +4,7 @@ const db = require("../models");
 const Advertisement = db.advertisement;
 // show the list of users advertisement
 const index = async (req, res, next) => {
+ 
   const { category, name, featured, sort, select } = req.query;
   const queryObject = {};
   if (category) {
@@ -15,10 +16,10 @@ const index = async (req, res, next) => {
   if (name) {
     queryObject.name = { $regex: name, $options: "i" };
   }
-  
+
   let apiData = Advertisement.find(queryObject);
   if (sort) {
-    let sortFix = sort.split(",").join(" "); 
+    let sortFix = sort.split(",").join(" ");
     apiData = apiData.sort(sortFix);
   }
   if (select) {
@@ -28,12 +29,12 @@ const index = async (req, res, next) => {
   }
   let page = Number(req.query.page) || 1;
   let limit = Number(req.query.limit) || 10;
-  let  skip =(page-1) * limit;
+  let skip = (page - 1) * limit;
   apiData = apiData.skip(skip).limit(limit);
   console.log(queryObject);
   // Advertisement.apiData
   const response = await apiData;
-  res.status(200).json({ response,nbHits:response.length });
+  res.status(200).json({ response, nbHits: response.length });
 };
 // Get Product Details
 const getProductDetails = async (req, res, next) => {
@@ -64,7 +65,7 @@ const getProductDetails = async (req, res, next) => {
 // };
 // add new user advertisement
 const store = (req, res, next) => {
-  console.log(req.body.location, "location");
+  console.log(req.body, "location");
   let advertisement = new Advertisement({
     name: req.body.name,
     description: req.body.description,
@@ -137,7 +138,13 @@ const update = (req, res, next) => {
     createdDate: req.body.createdDate,
     // location: req.body.location,
   };
-  Advertisement.findByIdAndUpdate(user_id, { $set: UpdateData })
+  Advertisement.findByIdAndUpdate(
+    user_id,
+    { $set: UpdateData },
+    {
+      new: true,
+    }
+  )
     .then((response) => {
       res.json({
         response,
