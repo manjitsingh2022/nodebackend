@@ -4,7 +4,7 @@ const Location = db.location;
 
 exports.getLocation = async (req, res, next) => {
   console.log("req", req.query);
-  const { city, country, sort, select /*  iso2, iso3,featured  */} = req.query;
+  const { city, country, sort, select /*  iso2, iso3,featured  */ } = req.query;
   const queryObject = {};
   if (city) {
     queryObject.city = { $regex: city, $options: "i" };
@@ -25,10 +25,10 @@ exports.getLocation = async (req, res, next) => {
     let selectFix = select.split(",").join(" ");
     apiData = apiData.select(selectFix);
   }
-    let page = Number(req.query.page) || 1;
-    let limit = Number(req.query.limit) || 10;
-    let skip = (page - 1) * limit;
-    apiData = apiData.skip(skip).limit(limit);
+  let page = Number(req.query.page) || 1;
+  let limit = Number(req.query.limit) || 10;
+  let skip = (page - 1) * limit;
+  apiData = apiData.skip(skip).limit(limit);
   console.log(queryObject);
   // Location.apiData
   // const response = await apiData;
@@ -41,8 +41,8 @@ exports.getLocation = async (req, res, next) => {
       // .select()
       // .sort()
       // .collation({ locale: "en_US", numericOrdering: true ,})
-      .limit(10)
-      // .distinct("city")
+      .limit(10);
+    // .distinct("city")
     console.log(location, "location");
     return res.status(200).json({
       success: true,

@@ -26,7 +26,7 @@ module.exports = function (app) {
   app.get('/advertisement/:id',advertisementController.getProductDetails)
   app.post("/advertisement", advertisementController.store);
   app.patch('/advertisement/update/:id',advertisementController.update)
-  app.delete("/advertisement/:id", advertisementController.destroy);
+  app.delete("/advertisement/delete/:id", advertisementController.destroy);
   app.delete(
     "/advertisement/deleteRecord",
     advertisementController.deleteAllData

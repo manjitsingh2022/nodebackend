@@ -4,20 +4,24 @@ const db = require("../models");
 const Advertisement = db.advertisement;
 // show the list of users advertisement
 const index = async (req, res, next) => {
- 
-  const { category, name, featured, sort, select } = req.query;
+  console.log("query", req.query);
+  const { category, name, featured, sort, select/* , address  */} = req.query;
+  // const queryObject = { $text: { $search: "\"star trek\"  -\"into darkness\"" } };
   const queryObject = {};
   if (category) {
-    queryObject.category = category;
+    queryObject.category = { $regex: category, $options: "i" ,category: 'asc',};
   }
+  // if (address) {
+  //   queryObject.address = address;
+  // }
   if (featured) {
     queryObject.featured = featured;
   }
   if (name) {
-    queryObject.name = { $regex: name, $options: "i" };
+    queryObject.name = { $regex: name, $options: "i", };
   }
 
-  let apiData = Advertisement.find(queryObject);
+  let apiData = Advertisement.find(queryObject)
   if (sort) {
     let sortFix = sort.split(",").join(" ");
     apiData = apiData.sort(sortFix);
@@ -33,9 +37,11 @@ const index = async (req, res, next) => {
   apiData = apiData.skip(skip).limit(limit);
   console.log(queryObject);
   // Advertisement.apiData
+  
   const response = await apiData;
-  res.status(200).json({ response, nbHits: response.length });
+  res.status(200).json({ response, nbHits: response.length});
 };
+
 // Get Product Details
 const getProductDetails = async (req, res, next) => {
   const product = await Advertisement.findById(req.params.id);
@@ -73,7 +79,7 @@ const store = (req, res, next) => {
     category: req.body.category,
     rating: req.body.rating,
     featured: req.body.featured,
-    location: req.body.location,
+    address: req.body.address,
   });
   advertisement
     .save()
@@ -134,9 +140,9 @@ const update = (req, res, next) => {
     description: req.body.description,
     status: req.body.status,
     image: req.body.image,
+    address: req.body.address,
     rating: req.body.rating,
     createdDate: req.body.createdDate,
-    // location: req.body.location,
   };
   Advertisement.findByIdAndUpdate(
     user_id,

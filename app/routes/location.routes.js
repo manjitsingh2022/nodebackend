@@ -12,7 +12,7 @@ module.exports = function(app) {
 app.get('/getlocation', LocationController.getLocation)
 app.get('/location/:_id', LocationController.getLocationId)
 app.post('/location', LocationController.store)
-app.put('/location/:_id', LocationController.UpdateById)
+app.put('/location/update/:_id', LocationController.UpdateById)
 app.delete('/location/delete/:_id', LocationController.deleteById)
 
 }
