@@ -4,24 +4,21 @@ const db = require("../models");
 const Advertisement = db.advertisement;
 // show the list of users advertisement
 const index = async (req, res, next) => {
-  console.log("query", req.query);
-  const { category, name, featured, sort, select/* , address  */} = req.query;
+  const { category, name, featured, sort, select } = req.query;
   // const queryObject = { $text: { $search: "\"star trek\"  -\"into darkness\"" } };
   const queryObject = {};
   if (category) {
-    queryObject.category = { $regex: category, $options: "i" ,category: 'asc',};
+    queryObject.category = { $regex: category, $options: "i" };
   }
-  // if (address) {
-  //   queryObject.address = address;
-  // }
   if (featured) {
     queryObject.featured = featured;
   }
+
   if (name) {
-    queryObject.name = { $regex: name, $options: "i", };
+    queryObject.name = { $regex: name, $options: "i" };
   }
 
-  let apiData = Advertisement.find(queryObject)
+  let apiData = Advertisement.find(queryObject);
   if (sort) {
     let sortFix = sort.split(",").join(" ");
     apiData = apiData.sort(sortFix);
@@ -32,14 +29,14 @@ const index = async (req, res, next) => {
     apiData = apiData.select(selectFix);
   }
   let page = Number(req.query.page) || 1;
-  let limit = Number(req.query.limit) || 10;
+  let limit = Number(req.query.limit) || 40;
   let skip = (page - 1) * limit;
   apiData = apiData.skip(skip).limit(limit);
   console.log(queryObject);
   // Advertisement.apiData
-  
+
   const response = await apiData;
-  res.status(200).json({ response, nbHits: response.length});
+  res.status(200).json({ response, nbHits: response.length, });
 };
 
 // Get Product Details
