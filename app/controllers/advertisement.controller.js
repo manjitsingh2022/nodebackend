@@ -18,6 +18,7 @@ const index = async (req, res, next) => {
     queryObject.name = { $regex: name, $options: "i" };
   }
 
+ 
   let apiData = Advertisement.find(queryObject);
   if (sort) {
     let sortFix = sort.split(",").join(" ");
